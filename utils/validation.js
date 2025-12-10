@@ -17,8 +17,8 @@ const validateRegister = [
   body('password')
     .isLength({ min: 6 })
     .withMessage('Password must be at least 6 characters long')
-    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/)
-    .withMessage('Password must contain at least one uppercase letter, one lowercase letter, and one number')
+    .matches(/^(?=.*[a-z])(?=.*\d)/)
+    .withMessage('Password must contain at least one lowercase letter and one number')
 ];
 
 // User login validation
@@ -73,10 +73,24 @@ const validateObjectId = (param) => {
   };
 };
 
+// Pagination validation
+const validatePagination = [
+  body('page')
+    .optional()
+    .isInt({ min: 1 })
+    .withMessage('Page must be a positive integer'),
+  
+  body('limit')
+    .optional()
+    .isInt({ min: 1, max: 50 })
+    .withMessage('Limit must be between 1 and 50')
+];
+
 module.exports = {
   validateRegister,
   validateLogin,
   validateCreateComment,
   validateUpdateComment,
-  validateObjectId
+  validateObjectId,
+  validatePagination
 };
