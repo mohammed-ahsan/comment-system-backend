@@ -37,8 +37,8 @@ const validateLogin = [
 const validateCreateComment = [
   body('content')
     .trim()
-    .isLength({ min: 1, max: 1000 })
-    .withMessage('Comment must be between 1 and 1000 characters')
+    .isLength({ min: 1, max: 500 })
+    .withMessage('Comment must be between 1 and 500 characters')
     .escape(),
   
   body('parentComment')
@@ -51,8 +51,8 @@ const validateCreateComment = [
 const validateUpdateComment = [
   body('content')
     .trim()
-    .isLength({ min: 1, max: 1000 })
-    .withMessage('Comment must be between 1 and 1000 characters')
+    .isLength({ min: 1, max: 500 })
+    .withMessage('Comment must be between 1 and 500 characters')
     .escape()
 ];
 
