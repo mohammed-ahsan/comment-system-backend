@@ -36,7 +36,7 @@ const getComments = async (req, res) => {
       });
     }
 
-    // Build sort object based on the sort parameter from frontend
+    // Build sort object based on sort parameter from frontend
     let sortObj = {};
     
     switch (sort) {
@@ -272,8 +272,12 @@ const updateComment = async (req, res) => {
     await comment.save();
     await comment.populate('author', 'username avatar');
 
-    // Emit real-time update
-    req.io.emit('commentUpdated', comment);
+    // Emit real-time update - different events for replies vs comments
+    if (comment.parentComment) {
+      req.io.emit('replyUpdated', comment);
+    } else {
+      req.io.emit('commentUpdated', comment);
+    }
 
     res.json({
       success: true,
@@ -316,8 +320,12 @@ const deleteComment = async (req, res) => {
     comment.isActive = false;
     await comment.save();
 
-    // Emit real-time update
-    req.io.emit('deletedComment', { id: comment._id });
+    // Emit real-time update - different events for replies vs comments
+    if (comment.parentComment) {
+      req.io.emit('replyDeleted', { id: comment._id });
+    } else {
+      req.io.emit('commentDeleted', { id: comment._id });
+    }
 
     res.json({
       success: true,
@@ -357,13 +365,12 @@ const likeComment = async (req, res) => {
       userId: req.user.id
     };
 
-    req.io.emit('commentReaction', {
-      commentId: reactionData.commentId,
-      type: reactionData.type,
-      likeCount: reactionData.likeCount,
-      dislikeCount: reactionData.dislikeCount,
-      userId: reactionData.userId
-    });
+    // Emit different events for replies vs comments
+    if (comment.parentComment) {
+      req.io.emit('replyReaction', reactionData);
+    } else {
+      req.io.emit('commentReaction', reactionData);
+    }
 
     res.json({
       success: true,
@@ -409,13 +416,12 @@ const dislikeComment = async (req, res) => {
       userId: req.user.id
     };
 
-    req.io.emit('commentReaction', {
-      commentId: reactionData.commentId,
-      type: reactionData.type,
-      likeCount: reactionData.likeCount,
-      dislikeCount: reactionData.dislikeCount,
-      userId: reactionData.userId
-    });
+    // Emit different events for replies vs comments
+    if (comment.parentComment) {
+      req.io.emit('replyReaction', reactionData);
+    } else {
+      req.io.emit('commentReaction', reactionData);
+    }
 
     res.json({
       success: true,
@@ -461,13 +467,12 @@ const removeReaction = async (req, res) => {
       userId: req.user.id
     };
 
-    req.io.emit('commentReaction', {
-      commentId: reactionData.commentId,
-      type: reactionData.type,
-      likeCount: reactionData.likeCount,
-      dislikeCount: reactionData.dislikeCount,
-      userId: reactionData.userId
-    });
+    // Emit different events for replies vs comments
+    if (comment.parentComment) {
+      req.io.emit('replyReaction', reactionData);
+    } else {
+      req.io.emit('commentReaction', reactionData);
+    }
 
     res.json({
       success: true,
@@ -529,7 +534,7 @@ const getReplies = async (req, res) => {
       });
     }
 
-    // Build sort object based on the sort parameter from frontend
+    // Build sort object based on sort parameter from frontend
     let sortObj = {};
     
     switch (sort) {
