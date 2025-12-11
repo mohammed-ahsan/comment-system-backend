@@ -209,7 +209,11 @@ const createComment = async (req, res) => {
     await comment.populate('author', 'username avatar');
 
     // Emit real-time update
-    req.io.emit('newComment', comment);
+    if (parentComment) {
+      req.io.emit('newReply', comment);
+    } else {
+      req.io.emit('newComment', comment);
+    }
 
     res.status(201).json({
       success: true,
@@ -269,7 +273,7 @@ const updateComment = async (req, res) => {
     await comment.populate('author', 'username avatar');
 
     // Emit real-time update
-    req.io.emit('updatedComment', comment);
+    req.io.emit('commentUpdated', comment);
 
     res.json({
       success: true,
