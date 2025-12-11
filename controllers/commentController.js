@@ -344,13 +344,20 @@ const likeComment = async (req, res) => {
     await comment.addLike(req.user.id);
     await comment.populate('author', 'username avatar');
 
-    // Emit real-time update
-    req.io.emit('commentReaction', {
+    const reactionData = {
       commentId: comment._id,
       type: 'like',
       likeCount: comment.likeCount,
       dislikeCount: comment.dislikeCount,
       userId: req.user.id
+    };
+
+    req.io.emit('commentReaction', {
+      commentId: reactionData.commentId,
+      type: reactionData.type,
+      likeCount: reactionData.likeCount,
+      dislikeCount: reactionData.dislikeCount,
+      userId: reactionData.userId
     });
 
     res.json({
@@ -389,13 +396,20 @@ const dislikeComment = async (req, res) => {
     await comment.addDislike(req.user.id);
     await comment.populate('author', 'username avatar');
 
-    // Emit real-time update
-    req.io.emit('commentReaction', {
+    const reactionData = {
       commentId: comment._id,
       type: 'dislike',
       likeCount: comment.likeCount,
       dislikeCount: comment.dislikeCount,
       userId: req.user.id
+    };
+
+    req.io.emit('commentReaction', {
+      commentId: reactionData.commentId,
+      type: reactionData.type,
+      likeCount: reactionData.likeCount,
+      dislikeCount: reactionData.dislikeCount,
+      userId: reactionData.userId
     });
 
     res.json({
@@ -434,13 +448,20 @@ const removeReaction = async (req, res) => {
     await comment.removeReaction(req.user.id);
     await comment.populate('author', 'username avatar');
 
-    // Emit real-time update
-    req.io.emit('commentReaction', {
+    const reactionData = {
       commentId: comment._id,
       type: 'remove',
       likeCount: comment.likeCount,
       dislikeCount: comment.dislikeCount,
       userId: req.user.id
+    };
+
+    req.io.emit('commentReaction', {
+      commentId: reactionData.commentId,
+      type: reactionData.type,
+      likeCount: reactionData.likeCount,
+      dislikeCount: reactionData.dislikeCount,
+      userId: reactionData.userId
     });
 
     res.json({
