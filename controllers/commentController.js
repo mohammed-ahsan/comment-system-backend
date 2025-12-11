@@ -208,11 +208,13 @@ const createComment = async (req, res) => {
     // Populate author info
     await comment.populate('author', 'username avatar');
 
+    const totalCount = await Comment.countDocuments({ isActive: true, parentComment: null });
+
     // Emit real-time update
     if (parentComment) {
       req.io.emit('newReply', comment);
     } else {
-      req.io.emit('newComment', comment);
+      req.io.emit('newComment', { comment, totalCount });
     }
 
     res.status(201).json({
@@ -320,11 +322,16 @@ const deleteComment = async (req, res) => {
     comment.isActive = false;
     await comment.save();
 
+    let totalCount;
+    if (!comment.parentComment) {
+      totalCount = await Comment.countDocuments({ isActive: true, parentComment: null });
+    }
+
     // Emit real-time update - different events for replies vs comments
     if (comment.parentComment) {
       req.io.emit('replyDeleted', { id: comment._id });
     } else {
-      req.io.emit('commentDeleted', { id: comment._id });
+      req.io.emit('commentDeleted', { id: comment._id, totalCount });
     }
 
     res.json({
