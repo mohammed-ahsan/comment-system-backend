@@ -74,6 +74,14 @@ commentSchema.virtual('engagementScore').get(function() {
   return this.likes.length - this.dislikes.length;
 });
 
+commentSchema.virtual('replyCount', {
+  ref: 'Comment',
+  localField: '_id',
+  foreignField: 'parentComment',
+  count: true,
+  match: { isActive: true }
+});
+
 // Method to check if user liked the comment
 commentSchema.methods.isLikedBy = function(userId) {
   return this.likes.some(like => like.user.toString() === userId.toString());

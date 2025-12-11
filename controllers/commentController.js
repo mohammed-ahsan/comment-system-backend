@@ -71,6 +71,7 @@ const getComments = async (req, res) => {
       comments = await Comment.find(query)
         .populate('author', 'username avatar')
         .populate('parentComment', 'content author')
+        .populate('replyCount')
         .sort(sortObj)
         .skip(skip)
         .limit(limit)
