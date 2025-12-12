@@ -63,12 +63,11 @@ A full-stack comment system built with MongoDB, Express.js, React.js, and Node.j
 1. **Clone the repository**
    ```bash
    git clone <repository-url>
-   cd techzu-task
    ```
 
 2. **Install backend dependencies**
    ```bash
-   cd backend
+   cd comment-system-backend
    npm install
    ```
 
@@ -112,7 +111,10 @@ A full-stack comment system built with MongoDB, Express.js, React.js, and Node.j
 
 1. **Navigate to frontend directory**
    ```bash
-   cd ../frontend
+   git clone <repository-url>
+   ```
+   ```bash
+   cd comment-system-frontend
    ```
 
 2. **Install frontend dependencies**
